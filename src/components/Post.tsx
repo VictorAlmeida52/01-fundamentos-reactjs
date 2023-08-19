@@ -56,6 +56,7 @@ export function Post({ author, publishedAt, content }: PostProps) {
   function handleNewCommentChange(
     event: React.ChangeEvent<HTMLTextAreaElement>
   ) {
+    event.currentTarget.setCustomValidity("");
     setNewCommentText(event.currentTarget.value);
   }
 
@@ -63,6 +64,13 @@ export function Post({ author, publishedAt, content }: PostProps) {
     setComments(comments.filter((c) => c.id !== comment.id));
   }
 
+  function handleNewCommentInvalid(
+    event: React.FormEvent<HTMLTextAreaElement>
+  ) {
+    event.currentTarget.setCustomValidity("Comentário não pode ser vazio");
+  }
+
+  const isNewCommentEmpty = newCommentText.trim().length === 0;
   return (
     <article className={styles.post}>
       <header>
@@ -106,10 +114,14 @@ export function Post({ author, publishedAt, content }: PostProps) {
           placeholder="Deixe um comentário"
           value={newCommentText}
           onChange={handleNewCommentChange}
+          required
+          onInvalid={handleNewCommentInvalid}
         />
 
         <footer>
-          <button type="submit">Publicar</button>
+          <button type="submit" disabled={isNewCommentEmpty}>
+            Publicar
+          </button>
         </footer>
       </form>
 
