@@ -9,26 +9,28 @@ import { useState } from "react";
 
 import uuid from "react-uuid";
 
-type PostContent = {
-  type: "paragraph" | "link";
-  content: string;
-};
-
-export type PostProps = {
-  id?: number;
-  author: {
-    name: string;
-    avatarUrl: string;
-    role: string;
-  };
-  publishedAt: Date;
-  content: PostContent[];
-};
-
-export type PostComment = {
+export interface PostComment {
   id: string;
   content: string;
-};
+}
+
+interface PostContent {
+  type: "paragraph" | "link";
+  content: string;
+}
+
+interface Author {
+  name: string;
+  avatarUrl: string;
+  role: string;
+}
+
+export interface PostProps {
+  id?: number;
+  author: Author;
+  publishedAt: Date;
+  content: PostContent[];
+}
 
 export function Post({ author, publishedAt, content }: PostProps) {
   const [comments, setComments] = useState<PostComment[]>([]);
@@ -56,7 +58,7 @@ export function Post({ author, publishedAt, content }: PostProps) {
   function handleNewCommentChange(
     event: React.ChangeEvent<HTMLTextAreaElement>
   ) {
-    event.currentTarget.setCustomValidity("");
+    event.target.setCustomValidity("");
     setNewCommentText(event.currentTarget.value);
   }
 
@@ -65,9 +67,9 @@ export function Post({ author, publishedAt, content }: PostProps) {
   }
 
   function handleNewCommentInvalid(
-    event: React.FormEvent<HTMLTextAreaElement>
+    event: React.InvalidEvent<HTMLTextAreaElement>
   ) {
-    event.currentTarget.setCustomValidity("Comentário não pode ser vazio");
+    event.target.setCustomValidity("Comentário não pode ser vazio");
   }
 
   const isNewCommentEmpty = newCommentText.trim().length === 0;
